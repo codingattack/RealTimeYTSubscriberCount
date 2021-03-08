@@ -1,0 +1,37 @@
+const updateYT = (e = null) => {
+  const id = '<<VIDEO>>';
+  const template = 'This video has VIEWCOUNT views | Welcome to Coding Attack Family';
+
+  if (e === null) {
+    const triggerName = 'updateYouTubeVideo';
+    const triggers = ScriptApp.getProjectTriggers().filter((trigger) => {
+      return trigger.getHandlerFunction() === triggerName;
+    });
+
+    if (triggers.length === 0) {
+      ScriptApp.newTrigger(triggerName).timeBased().everyMinutes(5).create();
+    }
+  }
+
+  const { items: [video = {}] = [] } = YouTube.Videos.list(
+    'snippet,statistics',
+    { id }
+  );
+
+  const {
+    snippet: { title: oldTitle, categoryId } = {},
+    statistics: { viewCount, commentCount } = {},
+  } = video;
+
+  if (viewCount && commentCount) {
+    const newTitle = template
+      .replace('VIEWCOUNT', viewCount);
+
+    if (oldTitle !== newTitle) {
+      YouTube.Videos.update(
+        { id, snippet: { title: newTitle, categoryId } },
+        'snippet'
+      );
+    }
+  }
+};
