@@ -20,10 +20,10 @@ const updateYT = (e = null) => {
 
   const {
     snippet: { title: oldTitle, categoryId } = {},
-    statistics: { viewCount, commentCount } = {},
+    statistics: { viewCount} = {},
   } = video;
 
-  if (viewCount && commentCount) {
+  if (viewCount) {
     const newTitle = template
       .replace('VIEWCOUNT', viewCount);
 
